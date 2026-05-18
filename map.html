@@ -346,21 +346,33 @@ async function loadGeoJSON(fileName) {
       style: function(feature) {
         const ph = feature.properties.pH || feature.properties.ph || feature.properties.PH;
         function getColor(val) {
-          if (!val) return "#aaa";
-          if (val >= 6.5) return "#2ecc71";
-          if (val >= 5.5) return "#f1c40f";
-          if (val >= 4.5) return "#e67e22";
-          return "#e74c3c";
-        }
+        if (!val) return "#aaa";
+        if (val >= 6.0 && val <= 7.6) return "#2ecc71";
+        if ((val >= 5.5 && val < 6.0) || (val > 7.6 && val <= 8.0)) return "#f1c40f";
+        if (val < 5.5 || val > 8.0) return "#e67e22";
+        return "#e74c3c";
+      }
         return { fillColor: getColor(ph), color: "#333", weight: 1, fillOpacity: 0.7 };
       },
       onEachFeature: function(feature, layer) {
-        let popup = "<b>Data pH Tanah</b><br>";
-        for (const key in feature.properties) {
-          popup += `<b>${key}:</b> ${feature.properties[key]}<br>`;
-        }
-        layer.bindPopup(popup);
-      }
+  const p = feature.properties;
+  const ph = p.grid_code_;
+
+  function getKelas(val) {
+    if (val >= 6.0 && val <= 7.6) return "S1 — Sangat Sesuai";
+    if ((val >= 5.5 && val < 6.0) || (val > 7.6 && val <= 8.0)) return "S2 — Cukup Sesuai";
+    if (val < 5.5 || val > 8.0) return "S3 — Marginal";
+    return "N — Tidak Sesuai";
+  }
+
+  layer.bindPopup(`
+    <b>Data pH Tanah</b><br>
+    <b>Nilai pH:</b> ${ph ? ph.toFixed(2) : "-"}<br>
+    <b>Kategori:</b> ${p.PH_1}<br>
+    <b>Kesesuaian:</b> ${getKelas(ph)}<br>
+    <b>Kedalaman Solum:</b> ${p.KDLMN_1}
+  `);
+}
     });
     rasterLayer.addTo(map);
     map.fitBounds(rasterLayer.getBounds());
