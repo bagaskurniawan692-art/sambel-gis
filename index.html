@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMBEL – Studi Analisis dan Model Pemetaan Spasial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a href="#beranda" class="brand">
+    <svg class="brand-icon" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="19" cy="19" r="18" fill="#c0392b" opacity="0.12"/>
+      <path d="M19 5C13.48 5 9 9.48 9 15c0 8 10 18 10 18s10-10 10-18c0-5.52-4.48-10-10-10z" fill="url(#ng1)"/>
+      <circle cx="19" cy="15" r="4" fill="white"/>
+      <path d="M10 21 Q14.5 18 19 22 Q23.5 26 28 21" stroke="#f39c12" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M10 25 Q14.5 22 19 26 Q23.5 30 28 25" stroke="#27ae60" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <defs>
+        <linearGradient id="ng1" x1="9" y1="5" x2="29" y2="33" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#c0392b"/>
+          <stop offset="0.45" stop-color="#e67e22"/>
+          <stop offset="1" stop-color="#27ae60"/>
+        </linearGradient>
+      </defs>
+    </svg>
+    SAMBEL
+  </a>
+  <ul class="nav-links">
+    <li><a href="#beranda" class="active" onclick="setActive(this)">Beranda</a></li>
+    <li><a href="#tentang" onclick="setActive(this)">Tentang</a></li>
+    <li><a href="#fitur" onclick="setActive(this)">Fitur</a></li>
+    <li><a href="#peta" onclick="setActive(this)">Peta</a></li>
+    <li><a href="#tim" onclick="setActive(this)">Tim</a></li>
+    <li><a href="#kontak" onclick="setActive(this)">Kontak</a></li>
+    <li><a href="#kontak" class="btn-login" onclick="setActive(this)">Gabung Disini</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="beranda">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+
+  <div class="hero-left">
+    <div class="badge">
+      <div class="badge-dot"></div>
+      Lowokwaru · Capsicum annuum L.
+    </div>
+    <h1 class="hero-title">SAMBEL</h1>
+    <div class="hero-subtitle">
+      Studi Analisis dan Model Pemetaan Spasial Berbasis Evaluasi Kesesuaian Lahan untuk Tanaman Cabai (<em>Capsicum annuum</em> L.) di Kecamatan Lowokwaru
+    </div>
+    <p class="hero-desc">
+      Platform Sistem Informasi Geografis berbasis web untuk analisis kesesuaian lahan budidaya cabai secara spasial menggunakan data multi-parameter di wilayah Kecamatan Lowokwaru, Kota Malang.
+    </p>
+    <div class="hero-actions">
+      <a href="#"
+class="btn-primary"
+onclick="openMapPage()">
+
+  Mulai Eksplorasi →
+
+</a>
+      <a href="#tentang" class="btn-secondary">
+        <div class="play-btn">
+          <svg viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 14,8 0,16"/></svg>
+        </div>
+        Pelajari Lebih Lanjut
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-card"><div class="stat-num">5</div><div class="stat-label">Parameter</div></div>
+      <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Kelas Lahan</div></div>
+      <div class="stat-card"><div class="stat-num">GIS</div><div class="stat-label">Berbasis Web</div></div>
+    </div>
+  </div>
+
+ <div class="hero-right cinematic">
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="video.mp4" type="video/mp4">
+  </video>
+  <div class="video-overlay"></div>
+</div>
+</section>
+
+<!-- TENTANG -->
+<section id="tentang">
+  <div class="about-grid">
+    <div class="about-visual fade-up">
+      <div class="about-card-stack">
+        <div class="acard acard-1">
+          <div class="acard-icon">🌶️</div>
+          <h4>Analisis Spasial</h4>
+          <p>Evaluasi kesesuaian lahan berbasis data spasial multi-layer menggunakan metode AHP dan weighted overlay.</p>
+        </div>
+        <div class="acard acard-2">
+          <div class="acard-icon">🗺️</div>
+          <h4>Peta Interaktif</h4>
+          <p>Visualisasi peta tematik kesesuaian lahan per kelurahan di Kecamatan Lowokwaru secara real-time.</p>
+        </div>
+      </div>
+    </div>
+    <div class="about-text fade-up">
+      <div class="section-label">Tentang Platform</div>
+      <h2>Apa itu <em>SAMBEL</em>?</h2>
+      <p>
+        SAMBEL adalah platform Web GIS yang dikembangkan untuk mendukung analisis dan evaluasi kesesuaian lahan budidaya tanaman cabai (<em>Capsicum annuum</em> L.) secara spasial di Kecamatan Lowokwaru, Kota Malang.
+      </p>
+      <p>
+        Platform ini mengintegrasikan berbagai data spasial dan atribut lahan untuk menghasilkan peta kesesuaian yang dapat digunakan oleh petani, penyuluh pertanian, dan perencana wilayah dalam mengoptimalkan potensi pertanian cabai di wilayah tersebut.
+      </p>
+      <ul class="about-list">
+        <li>Visualisasi peta kesesuaian lahan interaktif berbasis web</li>
+        <li>Ekspor laporan dan peta dalam format digital</li>
+        <li>Dashboard statistik ringkasan per wilayah</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- FITUR -->
+<section id="fitur">
+  <div style="text-align:center; margin-bottom: 50px;">
+    <div class="section-label">Fitur Unggulan</div>
+    <h2 class="section-title">Apa yang Bisa <span>SAMBEL</span> Lakukan?</h2>
+    <p class="section-desc" style="margin: 0 auto;">Kumpulan fitur canggih untuk mendukung analisis kesesuaian lahan cabai secara komprehensif dan berbasis data spasial.</p>
+  </div>
+
+  <div class="fitur-grid">
+    <div class="fitur-card red fade-up">
+      <div class="fitur-icon">🗺️</div>
+      <h3>Pemetaan Spasial Interaktif</h3>
+      <p>Tampilkan peta digital Kecamatan Lowokwaru dengan layer tematik yang dapat dinyalakan/dimatikan sesuai kebutuhan analisis.</p>
+    </div>
+    <div class="fitur-card orange fade-up">
+      <div class="fitur-icon">📊</div>
+      <h3>Evaluasi Kesesuaian Lahan</h3>
+      <p>Hitung dan klasifikasikan lahan ke dalam 4 kelas kesesuaian (S1, S2, S3, N) berdasarkan standar evaluasi lahan FAO.</p>
+    </div>
+    <div class="fitur-card green fade-up">
+      <div class="fitur-icon">⚖️</div>
+      <h3>Analisis Multi-Parameter</h3>
+      <p>Integrasikan 5 parameter lahan (Temperatur Tanah, Kemiringan Lereng, Kedalaman Solum, Ph tanah, Curah Hujan).</p>
+    </div>
+    <div class="fitur-card yellow fade-up">
+      <div class="fitur-icon">📈</div>
+      <h3>Dashboard & Statistik</h3>
+      <p>Pantau ringkasan statistik kesesuaian lahan.</p>
+    </div>
+    <div class="fitur-card red2 fade-up">
+      <div class="fitur-icon">📄</div>
+      <h3>Ekspor Laporan</h3>
+      <p>Unduh hasil analisis dalam format PDF atau ekspor peta kesesuaian lahan untuk keperluan dokumentasi dan presentasi.</p>
+    </div>
+    <div class="fitur-card green2 fade-up">
+      <div class="fitur-icon">🔍</div>
+      <h3>Query Spasial</h3>
+      <p>Lakukan pencarian dan filter data spasial berdasarkan parameter tertentu untuk analisis yang lebih mendalam dan terfokus.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PETA / KESESUAIAN LAHAN -->
+<section id="peta">
+<div id="map" style="height: 500px; border-radius:16px; margin-top:30px;"></div>
+  <div style="text-align:center; margin-bottom: 50px; position:relative; z-index:2;">
+    <div class="section-label">Kesesuaian Lahan</div>
+    <h2 class="section-title">Kelas <span style="color:#ff8a7a;">Evaluasi</span> Lahan</h2>
+    <p class="section-desc" style="margin: 0 auto; color: rgba(255,255,255,0.6);">Berdasarkan standar evaluasi lahan FAO, lahan diklasifikasikan ke dalam 4 kelas kesesuaian untuk budidaya cabai.</p>
+  </div>
+
+  <div class="kelas-grid">
+    <div class="kelas-card s1 fade-up">
+      <div class="kelas-badge">S1</div>
+      <h3>Sangat Sesuai</h3>
+      <p>Lahan tidak mempunyai faktor pembatas yang berarti untuk penggunaan secara berkelanjutan.</p>
+    </div>
+    <div class="kelas-card s2 fade-up">
+      <div class="kelas-badge">S2</div>
+      <h3>Cukup Sesuai</h3>
+      <p>Lahan mempunyai faktor pembatas yang berpengaruh terhadap produktivitas, memerlukan tambahan masukan.</p>
+    </div>
+    <div class="kelas-card s3 fade-up">
+      <div class="kelas-badge">S3</div>
+      <h3>Sesuai Marginal</h3>
+      <p>Lahan mempunyai faktor pembatas berat yang berpengaruh terhadap produktivitas dan memerlukan masukan lebih besar.</p>
+    </div>
+    <div class="kelas-card n fade-up">
+      <div class="kelas-badge">N</div>
+      <h3>Tidak Sesuai</h3>
+      <p>Lahan mempunyai faktor pembatas permanen yang tidak dapat diatasi dengan tingkat pengelolaan yang wajar.</p>
+    </div>
+  </div>
+
+  <div class="param-section fade-up">
+    <div class="param-title">5 Parameter Analisis</div>
+    <div class="param-grid">
+      <div class="param-chip"><span>⚗️</span> pH Tanah</div>
+      <div class="param-chip"><span>📐</span> Kemiringan Lereng</div>
+      <div class="param-chip"><span>🌧️</span> Curah Hujan</div>
+      <div class="param-chip"><span>🌡️</span> Temperatur Tanah</div>
+      <div class="param-chip"><span>💧</span> Kedalaman Solum</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIM -->
+<section id="tim">
+  <div style="text-align:center; margin-bottom: 50px;">
+    <div class="section-label">Tim Peneliti</div>
+    <h2 class="section-title">Orang-orang di Balik <span>SAMBEL</span></h2>
+    <p class="section-desc" style="margin: 0 auto;">Tim multidisiplin yang mengembangkan platform analisis kesesuaian lahan cabai di Kecamatan Lowokwaru.</p>
+  </div>
+  <div class="tim-grid">
+
+    <!-- Alya -->
+    <div class="tim-card fade-up" style="text-align:center; padding:30px 20px;">
+      <div style="
+  width:170px;
+  height:190px;
+  margin:0 auto 20px;
+  border-radius:24px;
+  overflow:hidden;
+  border:4px solid #c0392b;
+">
+        <img src="imgalya.jpg" alt="Alya Syaharani"
+          style="
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+          ">
+      </div>
+      <h3 style="margin-bottom:6px;">Alya Syaharani</h3>
+      <div style="color:#c0392b; font-weight:bold; font-size:13px; margin-bottom:10px;">
+        Ketua Kelompok
+      </div>
+      <p style="font-size:13px; line-height:1.5; margin-bottom:12px;">
+        Ahli Sistem Informasi Geografis dan analisis spasial lahan pertanian.
+      </p>
+      <div>
+        <a href="#" style="margin:0 5px;">IG</a>
+        <a href="#" style="margin:0 5px;">in</a>
+      </div>
+    </div>
+
+    <!-- Bagas -->
+    <div class="tim-card fade-up" style="text-align:center; padding:30px 20px;">
+      <div style="
+  width:170px;
+  height:190px;
+  margin:0 auto 20px;
+  border-radius:24px;
+  overflow:hidden;
+  border:4px solid #c0392b;
+">
+        <img src="imgbagas.jpg" alt="Bagas Dwi Kurniawan"
+          style="
+            width:100%;
+            height:100%;
+            object-fit:cover;
+object-position:center top;
+            display:block;
+          ">
+      </div>
+      <h3 style="margin-bottom:6px;">Bagas Dwi Kurniawan</h3>
+      <div style="color:#c0392b; font-weight:bold; font-size:13px; margin-bottom:10px;">
+        Pengembang WEBGIS
+      </div>
+      <p style="font-size:13px; line-height:1.5; margin-bottom:12px;">
+        Pengembang platform berbasis WEB dengan keahlian geospasial dan teknologi pemetaan.
+      </p>
+      <div>
+        <a href="https://www.instagram.com/bagaskurn__" 
+   target="_blank"
+   style="margin:0 5px;">
+   IG
+</a>
+        <a href="#" style="margin:0 5px;">in</a>
+      </div>
+    </div>
+
+
+    <!-- Rifky -->
+    <div class="tim-card fade-up" style="text-align:center; padding:30px 20px;">
+      <div style="
+  width:170px;
+  height:190px;
+  margin:0 auto 20px;
+  border-radius:24px;
+  overflow:hidden;
+  border:4px solid #c0392b;
+">
+        <img src="imgrifky.jpg" alt="Moh. Rifky Aufa W"
+          style="
+            width:100%;
+            height:100%;
+            object-fit:cover;
+		object-position:center top;
+            display:block;
+          ">
+      </div>
+      <h3 style="margin-bottom:6px;">Moh. Rifky Aufa W</h3>
+      <div style="color:#c0392b; font-weight:bold; font-size:13px; margin-bottom:10px;">
+        Pengembang WEBGIS
+      </div>
+      <p style="font-size:13px; line-height:1.5; margin-bottom:12px;">
+        Pengembang platform berbasis WEB dengan keahlian geospasial dan teknologi pemetaan.
+      </p>
+      <div>
+        <a href="#" style="margin:0 5px;">IG</a>
+        <a href="#" style="margin:0 5px;">in</a>
+      </div>
+    </div>
+
+
+    <!-- Kalisha -->
+    <div class="tim-card fade-up" style="text-align:center; padding:30px 20px;">
+      <div style="
+  width:170px;
+  height:190px;
+  margin:0 auto 20px;
+  border-radius:24px;
+  overflow:hidden;
+  border:4px solid #c0392b;
+">
+        <img src="imgicha.jpg" alt="Kalisha Wardhani"
+          style="
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+          ">
+      </div>
+      <h3 style="margin-bottom:6px;">Kalisha Wardani</h3>
+      <div style="color:#c0392b; font-weight:bold; font-size:13px; margin-bottom:10px;">
+        Analisis Data Spasial
+      </div>
+      <p style="font-size:13px; line-height:1.5; margin-bottom:12px;">
+        Ahli pengolahan data spasial dan visualisasi peta tematik berbasis GIS.
+      </p>
+      <div>
+        <a href="#" style="margin:0 5px;">IG</a>
+        <a href="#" style="margin:0 5px;">in</a>
+      </div>
+    </div>
+
+    <!-- Jeshinta -->
+    <div class="tim-card fade-up" style="text-align:center; padding:30px 20px;">
+      <div style="
+  width:170px;
+  height:190px;
+  margin:0 auto 20px;
+  border-radius:24px;
+  overflow:hidden;
+  border:4px solid #c0392b;
+">
+        <img src="imgjeje.jpg" alt="Jeshinta Mevianda"
+          style="
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            display:block;
+          ">
+      </div>
+      <h3 style="margin-bottom:6px;">Jeshinta Mevianda</h3>
+      <div style="color:#c0392b; font-weight:bold; font-size:13px; margin-bottom:10px;">
+        Analisis Data Spasial
+      </div>
+      <p style="font-size:13px; line-height:1.5; margin-bottom:12px;">
+        Ahli pengolahan data spasial dan visualisasi peta tematik berbasis GIS.
+      </p>
+      <div>
+        <a href="#" style="margin:0 5px;">IG</a>
+        <a href="#" style="margin:0 5px;">in</a>
+      </div>
+    </div>
+</section>
+
+<!-- KONTAK -->
+<section id="kontak">
+  <div class="kontak-grid">
+    <div class="kontak-info fade-up">
+      <div class="section-label">Hubungi Kami</div>
+      <h2>Mari <em>Berkolaborasi</em> Bersama</h2>
+      <p>Tertarik untuk berkolaborasi atau ingin mengetahui lebih lanjut tentang platform SAMBEL? Jangan ragu untuk menghubungi tim kami.</p>
+      <div class="kontak-item">
+        <div class="kontak-icon-wrap ki-red">📍</div>
+        <div class="kontak-item-text">
+          <h4>Lokasi</h4>
+          <p>Kecamatan Lowokwaru, Kota Malang, Jawa Timur 65141</p>
+        </div>
+      </div>
+      <div class="kontak-item">
+        <div class="kontak-icon-wrap ki-green">📧</div>
+        <div class="kontak-item-text">
+          <h4>Email</h4>
+          <p>kelompok13kemker@gmail.com</p>
+        </div>
+      </div>
+      <div class="kontak-item">
+        <div class="kontak-icon-wrap ki-orange">📞</div>
+        <div class="kontak-item-text">
+          <h4>Whatsapp</h4>
+          <p>087844788187</p>
+        </div>
+      </div>
+    </div>
+
+   <form class="kontak-form fade-up"
+      action="https://formsubmit.co/kelompok13kemker@gmail.com"
+      method="POST">
+
+  <!-- FORM SETTINGS -->
+  <input type="hidden" name="_captcha" value="false">
+  <input type="hidden" name="_subject" value="Pesan Baru dari Website SAMBEL">
+  <input type="hidden" name="_template" value="table">
+
+  <div class="form-row">
+
+    <div class="form-group">
+      <label>Nama Lengkap</label>
+      <input 
+        type="text" 
+        name="nama"
+        placeholder="Masukkan nama Anda"
+        required>
+    </div>
+
+    <div class="form-group">
+      <label>Email</label>
+      <input 
+        type="email"
+        name="email"
+        placeholder="email@contoh.com"
+        required>
+    </div>
+
+  </div>
+
+  <div class="form-group">
+    <label>Instansi / Institusi</label>
+    <input 
+      type="text"
+      name="instansi"
+      placeholder="Nama institusi Anda">
+  </div>
+
+  <div class="form-group">
+    <label>Topik</label>
+
+    <select name="topik">
+
+      <option>Kolaborasi Penelitian</option>
+      <option>Konsultasi Data Spasial</option>
+      <option>Akses Platform</option>
+      <option>Laporan Teknis</option>
+      <option>Lainnya</option>
+
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Pesan</label>
+
+    <textarea
+      name="pesan"
+      placeholder="Tuliskan pesan atau pertanyaan Anda di sini..."
+      required></textarea>
+  </div>
+
+  <button type="submit" class="btn-submit">
+    Kirim Pesan →
+  </button>
+
+</form>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#beranda" class="brand">
+        <svg width="32" height="32" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 4C13.48 4 9 8.48 9 14c0 8 10 20 10 20s10-12 10-20C29 8.48 24.52 4 19 4z" fill="url(#fg1)"/>
+          <circle cx="19" cy="14" r="4" fill="white" opacity="0.9"/>
+          <defs><linearGradient id="fg1" x1="9" y1="4" x2="29" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#e74c3c"/><stop offset="1" stop-color="#27ae60"/></linearGradient></defs>
+        </svg>
+        &nbsp;SAMBEL
+      </a>
+      <p>Studi Analisis dan Model Pemetaan Spasial Berbasis Evaluasi Kesesuaian Lahan untuk Tanaman Cabai di Kecamatan Lowokwaru, Kota Malang.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Navigasi</h4>
+      <ul>
+        <li><a href="#beranda">Beranda</a></li>
+        <li><a href="#tentang">Tentang</a></li>
+        <li><a href="#fitur">Fitur</a></li>
+        <li><a href="#peta">Peta Kesesuaian</a></li>
+        <li><a href="#tim">Tim</a></li>
+        <li><a href="#kontak">Kontak</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Parameter Analisis</h4>
+      <ul>
+        <li><a href="#">Jenis Tanah</a></li>
+        <li><a href="#">pH & Tekstur Tanah</a></li>
+        <li><a href="#">Kemiringan Lereng</a></li>
+        <li><a href="#">Curah Hujan</a></li>
+        <li><a href="#">Suhu & Drainase</a></li>
+      </ul>
+    </div>
+    <div class="footer-links">
+      <h4>Kelas Lahan</h4>
+      <ul>
+        <li><a href="#">S1 – Sangat Sesuai</a></li>
+        <li><a href="#">S2 – Cukup Sesuai</a></li>
+        <li><a href="#">S3 – Sesuai Marginal</a></li>
+        <li><a href="#">N – Tidak Sesuai</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 <span>SAMBEL</span> – Web GIS Kecamatan Lowokwaru. Hak cipta dilindungi.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<div class="page-transition" id="transition">
+
+  <div class="transition-content">
+
+    <img src="logo.png" class="transition-logo">
+
+    <h2>Memuat WebGIS SAMBEL</h2>
+
+    <p>Menganalisis data spasial...</p>
+
+    <div class="loader-bar">
+      <div class="loader-fill"></div>
+    </div>
+
+  </div>
+
+</div>
+</body>
+</html>

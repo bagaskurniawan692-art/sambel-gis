@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SAMBEL GIS</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="map.css">
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+  <div class="logo">
+    <h2>🌶️ SAMBEL GIS</h2>
+  </div>
+
+  <div class="menu-section">
+
+    <div class="menu-title">Dashboard</div>
+
+    <div class="menu-item">
+      🏠 Beranda
+    </div>
+
+  </div>
+
+  <div class="menu-section">
+
+    <div class="menu-title">Parameter</div>
+
+    <div class="menu-item" onclick="showPH()">
+      ⚗️ pH Tanah
+    </div>
+    <div class="menu-item" onclick="toggleLayer('lereng')">
+      📐 Kemiringan
+    </div>
+    <div class="menu-item" onclick="toggleLayer('hujan')">
+      🌧️ Curah Hujan
+    </div>
+
+    <div class="menu-item" onclick="toggleLayer('suhu')">
+      🌡️ Suhu
+    </div>
+
+    <div class="menu-item" onclick="toggleLayer('solum')">
+      💧 Kedalaman Solum
+    </div>
+
+  </div>
+
+  <div class="menu-section">
+
+    <div class="menu-title">Navigasi</div>
+
+    <div class="menu-item"
+    onclick="window.location.href='index.html'">
+      ⬅ Kembali
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TOPBAR -->
+
+<div class="topbar-map">
+<div class="map-tools-panel">
+
+
+</div>
+
+<div class="map-actions">
+
+  <select id="pilihLahan" class="map-select">
+
+    <option value="">Pilih Lahan</option>
+
+    <option value="1">Lahan 1</option>
+
+    <option value="2">Lahan 2</option>
+
+    <option value="3">Lahan 3</option>
+
+  </select>
+
+  <button class="map-btn" onclick="zoomLahan()">
+    🛰️ Tampilkan
+  </button>
+
+</div>
+
+</div>
+
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- LEGEND -->
+
+<div class="map-legend">
+
+  <h3>Kesesuaian Lahan</h3>
+
+  <div class="legend-item">
+    <span class="c1"></span>
+    S1 — Sangat Sesuai
+  </div>
+
+  <div class="legend-item">
+    <span class="c2"></span>
+    S2 — Cukup Sesuai
+  </div>
+
+  <div class="legend-item">
+    <span class="c3"></span>
+    S3 — Marginal
+  </div>
+
+  <div class="legend-item">
+    <span class="c4"></span>
+    N — Tidak Sesuai
+  </div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/georaster"></script>
+
+<script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+<script>
+
+/* ===== MAP ===== */
+
+const map = L.map('map', {
+  zoomControl:false
+}).setView([-7.9666, 112.6326], 13);
+
+/* ===== ZOOM CONTROL ===== */
+
+L.control.zoom({
+  position:'topleft'
+}).addTo(map);
+
+/* ===== BASEMAP ===== */
+
+const osm = L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+  attribution:'© OpenStreetMap'
+});
+
+const satellite = L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{
+  attribution:'© Esri'
+});
+
+/* ===== DEFAULT ===== */
+
+satellite.addTo(map);
+
+/* ===== BASEMAP SWITCH ===== */
+
+L.control.layers({
+  "Peta": osm,
+  "Satelit": satellite
+}).addTo(map);
+
+/* ===== TIFF DTM LAYER ===== */
+
+let layers = {};
+let rasterLayer;
+
+fetch("dtm1.tif")
+  .then(response => response.arrayBuffer())
+  .then(arrayBuffer => parseGeoraster(arrayBuffer))
+  .then(georaster => {
+
+    console.log("GeoRaster:", georaster);
+
+    layers.dtm = new GeoRasterLayer({
+      georaster: georaster,
+
+      opacity: 0.7,
+
+      resolution: 256
+    });
+
+  });
+
+/* ===== TOGGLE ===== */
+
+function toggleLayer(name){
+
+  if(map.hasLayer(layers[name])){
+    map.removeLayer(layers[name]);
+  }
+
+  else{
+    layers[name].addTo(map);
+  }
+
+}
+let markerLahan;
+
+/* ===== ZOOM KE LAHAN ===== */
+
+function zoomLahan(){
+
+  const pilihan =
+  document.getElementById("pilihLahan").value;
+
+  let lat;
+  let lng;
+  let nama;
+
+  // ===== LAHAN 1 =====
+
+  if(pilihan === "1"){
+
+    lat = -7.938463;
+    lng = 112.580822;
+    nama = "Lahan 1";
+
+  }
+
+  // ===== LAHAN 2 =====
+
+  else if(pilihan === "2"){
+
+    lat = -7.937851;
+    lng = 112.582290;
+    nama = "Lahan 2";
+
+  }
+
+  // ===== LAHAN 3 =====
+
+  else if(pilihan === "3"){
+
+    lat = -7.940582;
+    lng = 112.586287;
+    nama = "Lahan 3";
+
+  }
+
+  else{
+
+    alert("Pilih lahan terlebih dahulu");
+    return;
+
+  }
+
+  // ===== SMOOTH ZOOM =====
+
+  map.flyTo(
+    [lat, lng],
+    19,
+    {
+      duration: 2
+    }
+  );
+
+  // ===== HAPUS MARKER LAMA =====
+
+  if(markerLahan){
+
+    map.removeLayer(markerLahan);
+
+  }
+
+  // ===== TAMBAH MARKER =====
+
+  markerLahan = L.marker([lat, lng])
+
+    .addTo(map)
+
+    .bindPopup(
+      "<b>" + nama + "</b><br>Lokasi titik lahan penelitian"
+    )
+
+    .openPopup();
+
+}
+/* ================================= */
+/* ========= LOAD TIFF ============= */
+/* ================================= */
+
+async function loadRaster(fileName){
+
+  // hapus raster lama
+
+  if(rasterLayer){
+
+    map.removeLayer(rasterLayer);
+
+  }
+
+  // ambil file tif
+
+  const response =
+    await fetch(fileName);
+
+  const arrayBuffer =
+    await response.arrayBuffer();
+
+  // parse tif
+
+  const georaster =
+    await parseGeoraster(arrayBuffer);
+
+  // buat layer
+
+  rasterLayer =
+    new GeoRasterLayer({
+
+      georaster: georaster,
+
+      opacity: 0.8,
+
+      resolution: 256
+
+    });
+
+  // tampilkan
+
+  rasterLayer.addTo(map);
+
+}
+/* ================================= */
+/* ============ SHOW PH ============ */
+/* ================================= */
+
+function showPH(){
+
+  const lahan =
+    document.getElementById("pilihLahan").value;
+
+  // lahan 1
+
+  if(lahan == "1"){
+
+    loadRaster("ph1.tif");
+
+  }
+
+  // lahan 2
+
+  if(lahan == "2"){
+
+    loadRaster("ph2.tif");
+
+  }
+
+  // lahan 3
+
+  if(lahan == "3"){
+
+    loadRaster("ph3.tif");
+
+  }
+
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body>
+</html>
