@@ -333,39 +333,51 @@ async function loadRaster(fileName){
   rasterLayer.addTo(map);
 
 }
-/* ================================= */
-/* ============ SHOW PH ============ */
-/* ================================= */
-
-function showPH(){
-
-  const lahan =
-    document.getElementById("pilihLahan").value;
-
-  // lahan 1
-
-  if(lahan == "1"){
-
-    loadRaster("ph1.tif");
-
+async function loadGeoJSON(fileName) {
+  if (rasterLayer) {
+    map.removeLayer(rasterLayer);
+    rasterLayer = null;
   }
-
-  // lahan 2
-
-  if(lahan == "2"){
-
-    loadRaster("ph2.tif");
-
+  try {
+    const response = await fetch(fileName);
+    if (!response.ok) { alert("File tidak ditemukan: " + fileName); return; }
+    const data = await response.json();
+    rasterLayer = L.geoJSON(data, {
+      style: function(feature) {
+        const ph = feature.properties.pH || feature.properties.ph || feature.properties.PH;
+        function getColor(val) {
+          if (!val) return "#aaa";
+          if (val >= 6.5) return "#2ecc71";
+          if (val >= 5.5) return "#f1c40f";
+          if (val >= 4.5) return "#e67e22";
+          return "#e74c3c";
+        }
+        return { fillColor: getColor(ph), color: "#333", weight: 1, fillOpacity: 0.7 };
+      },
+      onEachFeature: function(feature, layer) {
+        let popup = "<b>Data pH Tanah</b><br>";
+        for (const key in feature.properties) {
+          popup += `<b>${key}:</b> ${feature.properties[key]}<br>`;
+        }
+        layer.bindPopup(popup);
+      }
+    });
+    rasterLayer.addTo(map);
+    map.fitBounds(rasterLayer.getBounds());
+  } catch(err) {
+    alert("Gagal memuat GeoJSON!");
   }
+}
 
-  // lahan 3
-
-  if(lahan == "3"){
-
-    loadRaster("ph3.tif");
-
-  }
-
+function showPH() {
+  const lahan = document.getElementById("pilihLahan").value;
+  if (!lahan) { alert("Pilih lahan terlebih dahulu"); return; }
+  const phFiles = {
+    "1": "LAHAN1A_GJSON.geojson",
+    "2": "ph2.geojson",
+    "3": "ph3.geojson"
+  };
+  loadGeoJSON(phFiles[lahan]);
 }
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
